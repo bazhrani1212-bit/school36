@@ -6,28 +6,49 @@
   <title>إدارة شواهد التقويم المدرسي</title>
   <style>
     :root{
-      --bg:#f1fbf1; --card:#ffffff; --text:#0f172a; --muted:#475569;
-      --primary:#0f7a3a; --border:#dbe7db; --shadow: 0 10px 30px rgba(2,6,23,.08);
+      --bg:#f1fbf1;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#475569;
+      --primary:#0f7a3a;
+      --border:#dbe7db;
+      --shadow: 0 10px 30px rgba(2,6,23,.08);
       --radius:16px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial; color:var(--text); background:linear-gradient(180deg,#ffffff 0%, var(--bg) 60%, #ffffff 100%); font-size:24px;}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial;
+      color:var(--text);
+      background:linear-gradient(180deg,#ffffff 0%, var(--bg) 60%, #ffffff 100%);
+      font-size:24px; /* بقية الكود */
+    }
     a{color:var(--primary);text-decoration:none}
     a:hover{text-decoration:underline}
+
     header{
       position:sticky; top:0; z-index:5;
       background:#fff; border-bottom:1px solid var(--border);
     }
     .wrap{max-width:1300px; margin:0 auto; padding:14px 16px;}
     .brand{display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+
+    /* عنوان الصفحة */
     .brand h1{font-size:30px; margin:0; font-weight:900;}
+
     .brand .sub{font-size:18px; color:var(--muted); line-height:1.5}
+
     .actions{display:flex; gap:8px; flex-wrap:wrap}
     button,.btn{
-      border:1px solid var(--border); background:#fff; color:var(--text);
-      padding:10px 12px; border-radius:12px; cursor:pointer;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
       box-shadow: 0 3px 10px rgba(2,6,23,.06);
       font-weight:600;
+      font-size:22px;
     }
     button.primary{background:var(--primary); color:#fff; border-color:transparent}
     button.danger{background:#b42318;color:#fff;border-color:transparent}
@@ -47,26 +68,43 @@
       display:flex; align-items:center; justify-content:space-between; gap:10px;
       padding:10px 12px; border:1px solid var(--border); border-radius:14px; cursor:pointer;
       background:#fff;
+      font-size:24px;
     }
     .domain-item.active{outline:2px solid rgba(15,122,58,.20); border-color:rgba(15,122,58,.35)}
-    .domain-item small{color:var(--muted)}
+    .domain-item small{color:var(--muted); font-size:20px}
 
     .search{display:flex; gap:8px; align-items:center}
     input[type="text"], textarea, select{
-      width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--border);
-      background:#fff; color:var(--text);
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
       outline:none;
+      font-size:24px;
     }
     textarea{min-height:90px; resize:vertical}
 
     .toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
-    .pill{display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border:1px solid var(--border); border-radius:999px; color:var(--muted); background:#fff}
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      color:var(--muted);
+      background:#fff;
+      font-size:20px
+    }
 
     .cards{display:flex; flex-direction:column; gap:10px}
     .card{background:#fff; border:1px solid var(--border); border-radius:var(--radius); box-shadow: 0 10px 25px rgba(2,6,23,.06)}
-    .card .top{padding:12px 14px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; gap:10px; align-items:flex-start; flex-wrap:wrap}
+    .card .top{
+      padding:12px 14px; border-bottom:1px solid var(--border);
+      display:flex; justify-content:space-between; gap:10px; align-items:flex-start; flex-wrap:wrap
+    }
     .meta{display:flex; flex-direction:column; gap:4px}
-    .code{font-weight:800; letter-spacing:.5px}
+    .code{font-weight:800; letter-spacing:.5px; font-size:24px}
     .std{font-size:20px; color:var(--muted)}
     .card .content{padding:12px 14px}
     .indicator{white-space:pre-wrap; line-height:1.7}
@@ -78,12 +116,29 @@
     @media (max-width: 560px){ .ev-grid{grid-template-columns: 1fr;} }
 
     .ev{
-      border:1px solid var(--border); border-radius:14px; overflow:hidden; background:#fff;
-      display:flex; flex-direction:column;
+      border:1px solid var(--border);
+      border-radius:14px;
+      overflow:hidden;
+      background:#fff;
+      display:flex;
+      flex-direction:column;
     }
-    .thumb{height:140px; background:#f2f6f2; display:flex; align-items:center; justify-content:center; color:var(--muted); position:relative}
+    .thumb{
+      height:140px;
+      background:#f2f6f2;
+      display:flex; align-items:center; justify-content:center;
+      color:var(--muted);
+      position:relative
+    }
     .thumb img{width:100%; height:100%; object-fit:cover}
-    .thumb .tag{position:absolute; bottom:8px; left:8px; background:rgba(15,122,58,.92); color:#fff; font-size:11px; padding:4px 8px; border-radius:999px}
+    .thumb .tag{
+      position:absolute; bottom:8px; left:8px;
+      background:rgba(15,122,58,.92);
+      color:#fff;
+      font-size:18px;
+      padding:4px 8px;
+      border-radius:999px
+    }
     .ev .info{padding:10px 10px 12px; display:flex; flex-direction:column; gap:6px}
     .ev .title{font-weight:800; font-size:22px; line-height:1.4}
     .ev .sub{font-size:20px; color:var(--muted)}
@@ -95,34 +150,49 @@
     .modal.show{display:flex}
     .dialog{width:min(980px, 100%); background:#fff; border-radius:18px; border:1px solid var(--border); box-shadow:var(--shadow); overflow:hidden}
     .dialog .dh{padding:12px 14px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:10px}
-    .dialog .dh strong{font-size:14px}
+    .dialog .dh strong{font-size:24px}
     .dialog .db{padding:14px}
     .close{background:#fff}
     .viewer{width:100%; height:70vh; border:1px solid var(--border); border-radius:14px; overflow:hidden; background:#f7faf7}
     .viewer iframe,.viewer embed{width:100%; height:100%; border:0}
 
     .hint{color:var(--muted); font-size:18px; line-height:1.7}
-    .toast{position:fixed; bottom:16px; right:16px; background:#0b1220; color:#fff; padding:10px 12px; border-radius:12px; display:none; z-index:60; max-width:360px}
+    .toast{position:fixed; bottom:16px; right:16px; background:#0b1220; color:#fff; padding:10px 12px; border-radius:12px; display:none; z-index:60; max-width:360px; font-size:18px}
     .toast.show{display:block}
 
     .split{display:grid; grid-template-columns:1fr 1fr; gap:10px}
     @media (max-width: 900px){ .split{grid-template-columns:1fr} }
 
     .tiny{font-size:18px; color:var(--muted)}
-    .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:18px; border:1px solid var(--border); padding:2px 6px; border-radius:8px; background:#fff}
-      .masthead{font-weight:900; font-size:26px; line-height:1.6; margin-bottom:10px}
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:18px;
+      border:1px solid var(--border);
+      padding:2px 6px;
+      border-radius:8px;
+      background:#fff
+    }
+
+    /* رأس الصفحة: مستطيل 3D أصغر + سطرين + حجم 20 */
+    .masthead{
+      font-weight:900;
+      font-size:20px;
+      line-height:1.55;
+      margin-bottom:10px;
+    }
     .masthead-box{
+      display:inline-block;
       background: linear-gradient(135deg, #ffffff 0%, #e8f7ea 60%, #ffffff 100%);
       border:1px solid rgba(15,122,58,.18);
-      border-radius:16px;
-      padding:12px 14px;
+      border-radius:14px;
+      padding:8px 10px;          /* أصغر */
       box-shadow:
-        0 14px 28px rgba(2,6,23,.10),
-        inset 0 1px 0 rgba(255,255,255,.75),
-        inset 0 -6px 14px rgba(15,122,58,.08);
+        0 10px 20px rgba(2,6,23,.10),
+        inset 0 1px 0 rgba(255,255,255,.78),
+        inset 0 -5px 12px rgba(15,122,58,.08);
     }
     .masthead-line{display:block}
-    .masthead-line + .masthead-line{margin-top:4px}
+    .masthead-line + .masthead-line{margin-top:2px}
   </style>
 </head>
 <body>
@@ -131,11 +201,8 @@
     <div class="brand">
       <div>
         <div class="masthead masthead-box">
-          <span class="masthead-line">المملكة العربية السعودية</span>
-          <span class="masthead-line">وزارة التعليم</span>
-          <span class="masthead-line">الابتدائية السادسة والثلاثون</span>
-          <span class="masthead-line">فريق التميز</span>
-          <span class="masthead-line">مديرة المدرسة: نورة الرفاعي</span>
+          <span class="masthead-line">المملكة العربية السعودية - وزارة التعليم</span>
+          <span class="masthead-line">الابتدائية السادسة والثلاثون - فريق التميز - مديرة المدرسة: نورة الرفاعي</span>
         </div>
         <h1>إدارة شواهد التقويم المدرسي</h1>
         <div class="sub">منصة محلية (بدون سيرفر) لإضافة الشواهد لكل مؤشر — روابط / صور / ملفات — مع حفظ تلقائي.</div>
@@ -385,8 +452,6 @@ const DOMAIN_ORDER = [
   { key:'env', name:'مجال البيئة المدرسية' },
 ];
 
-// مؤشرات مبدئية (مختصرة) — يمكنك تعديل/إضافة مؤشرات من زر (إضافة مؤشر)
-// إذا أردتِ إدخال كل المؤشرات دفعة واحدة: استخدمي التصدير/الاستيراد بعد تجهيز JSON.
 const SEED = {
   version: 1,
   activeDomain: 'admin',
@@ -407,7 +472,6 @@ const SEED = {
       { id: uuid(), standard: 'توفير بيئة تعلم آمنة وداعمة', code: '4-1-1-1', title: 'توفر المدرسة بيئة صفية وغرف مصادر مناسبة وآمنة.', desc: '', suggested: '' },
     ]},
   },
-  // evidence map: indicatorId -> list
   evidence: {}
 };
 
@@ -425,6 +489,16 @@ const empty = $('#empty');
 
 function countEvidence(indicatorId){
   return (state.evidence[indicatorId] || []).length;
+}
+
+function countDomainEvidence(domainKey){
+  const domain = state.domains[domainKey];
+  if(!domain) return 0;
+  return (domain.indicators||[]).reduce((acc,it)=>acc + countEvidence(it.id), 0);
+}
+
+function normalizeText(s){
+  return (s||'').toLowerCase().replace(/\s+/g,' ').trim();
 }
 
 function renderDomains(){
@@ -448,14 +522,8 @@ function renderDomains(){
   });
 }
 
-function countDomainEvidence(domainKey){
-  const domain = state.domains[domainKey];
-  if(!domain) return 0;
-  return (domain.indicators||[]).reduce((acc,it)=>acc + countEvidence(it.id), 0);
-}
-
-function normalizeText(s){
-  return (s||'').toLowerCase().replace(/\s+/g,' ').trim();
+function escapeHtml(s){
+  return String(s||'').replace(/[&<>"]/g, (c)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 }
 
 function renderCards(){
@@ -505,7 +573,6 @@ function renderCards(){
         </div>
       `;
 
-      // actions
       c.querySelector('[data-act="addEv"]').onclick = ()=> openEvidenceModal(it.id);
       c.querySelector('[data-act="edit"]').onclick = ()=> openIndicatorModal(it);
       c.querySelector('[data-act="del"]').onclick = ()=> deleteIndicator(it.id);
@@ -513,10 +580,6 @@ function renderCards(){
       cards.appendChild(c);
       renderEvidenceGrid(it.id);
     });
-}
-
-function escapeHtml(s){
-  return String(s||'').replace(/[&<>"]/g, (c)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 }
 
 async function renderEvidenceGrid(indicatorId){
@@ -541,12 +604,10 @@ async function renderEvidenceGrid(indicatorId){
     let thumb = `<div class="thumb"><div>📎</div><span class="tag">${ev.type==='link'?'رابط':'ملف'}</span></div>`;
 
     if(ev.type==='file' && ev.mime && ev.mime.startsWith('image/')){
-      // Use Blob URL (async)
       const rec = await getBlob(ev.blobId);
       if(rec?.blob){
         const url = URL.createObjectURL(rec.blob);
         thumb = `<div class="thumb"><img alt="" src="${url}"><span class="tag">صورة</span></div>`;
-        // revoke later to keep UI responsive
         setTimeout(()=> URL.revokeObjectURL(url), 10000);
       }
     }
@@ -583,12 +644,18 @@ function render(){
  **********************/
 let editingIndicatorId = null;
 
+function findIndicatorDomain(indicatorId){
+  for(const d of DOMAIN_ORDER){
+    const domain = state.domains[d.key];
+    if((domain?.indicators||[]).some(x=>x.id===indicatorId)) return d.key;
+  }
+  return state.activeDomain;
+}
+
 function openIndicatorModal(indicator=null){
   editingIndicatorId = indicator?.id || null;
-
   $('#mIndicatorTitle').textContent = indicator ? 'تعديل مؤشر' : 'إضافة مؤشر';
 
-  // domains select
   const sel = $('#fDomain');
   sel.innerHTML = '';
   DOMAIN_ORDER.forEach(d=>{
@@ -608,14 +675,6 @@ function openIndicatorModal(indicator=null){
   showModal('mIndicator');
 }
 
-function findIndicatorDomain(indicatorId){
-  for(const d of DOMAIN_ORDER){
-    const domain = state.domains[d.key];
-    if((domain?.indicators||[]).some(x=>x.id===indicatorId)) return d.key;
-  }
-  return state.activeDomain;
-}
-
 function upsertIndicator(){
   const domainKey = $('#fDomain').value;
   const code = $('#fCode').value.trim();
@@ -629,15 +688,11 @@ function upsertIndicator(){
     return;
   }
 
-  // If editing: remove from old domain first
   if(editingIndicatorId){
     const oldDomain = findIndicatorDomain(editingIndicatorId);
     const oldList = state.domains[oldDomain].indicators;
     const idx = oldList.findIndex(x=>x.id===editingIndicatorId);
-    const obj = {
-      id: editingIndicatorId,
-      standard, code, title, desc, suggested,
-    };
+    const obj = { id: editingIndicatorId, standard, code, title, desc, suggested };
     if(idx>-1) oldList.splice(idx, 1);
     state.domains[domainKey].indicators.push(obj);
   } else {
@@ -654,7 +709,6 @@ function upsertIndicator(){
 async function deleteIndicator(indicatorId){
   if(!confirm('حذف المؤشر مع جميع الشواهد؟')) return;
 
-  // delete evidence blobs
   const evs = state.evidence[indicatorId] || [];
   for(const ev of evs){
     if(ev.type==='file' && ev.blobId){
@@ -663,7 +717,6 @@ async function deleteIndicator(indicatorId){
   }
   delete state.evidence[indicatorId];
 
-  // remove indicator
   const dKey = findIndicatorDomain(indicatorId);
   const list = state.domains[dKey].indicators;
   const idx = list.findIndex(x=>x.id===indicatorId);
@@ -723,7 +776,6 @@ async function addEvidence(){
     return;
   }
 
-  // file
   const fileInput = $('#evFile');
   const file = fileInput.files?.[0];
   if(!file){
@@ -735,7 +787,9 @@ async function addEvidence(){
   await putBlob({ id: blobId, blob: file, name: file.name, mime: file.type || 'application/octet-stream', size: file.size, createdAt: new Date().toISOString() });
 
   list.push({
-    id: uuid(), type:'file', title,
+    id: uuid(),
+    type:'file',
+    title,
     blobId,
     name: file.name,
     mime: file.type || 'application/octet-stream',
@@ -768,8 +822,6 @@ async function removeEvidence(indicatorId, evidenceId){
 /**********************
  * Viewer / Open
  **********************/
-let currentViewing = null;
-
 function showModal(id){ document.getElementById(id).classList.add('show'); }
 function hideModal(id){ document.getElementById(id).classList.remove('show'); }
 
@@ -778,12 +830,10 @@ function openEvidence(ev){
     window.open(ev.url, '_blank', 'noopener,noreferrer');
     return;
   }
-  // file
   viewEvidence(ev, true);
 }
 
 async function viewEvidence(ev, openInNewTab=false){
-  currentViewing = ev;
   const viewer = $('#viewer');
   const hint = $('#viewerHint');
   const btnOpen = $('#viewerOpen');
@@ -813,7 +863,6 @@ async function viewEvidence(ev, openInNewTab=false){
 
   btnOpen.onclick = ()=> window.open(url, '_blank', 'noopener');
 
-  // Try to embed preview
   const mime = ev.mime || rec.mime || '';
   if(mime.startsWith('image/')){
     const img = document.createElement('img');
@@ -828,7 +877,6 @@ async function viewEvidence(ev, openInNewTab=false){
     embed.type = 'application/pdf';
     viewer.appendChild(embed);
   } else {
-    // fallback
     const box = document.createElement('div');
     box.style.padding='14px';
     box.className='hint';
@@ -839,8 +887,6 @@ async function viewEvidence(ev, openInNewTab=false){
 
   showModal('mViewer');
   if(openInNewTab) btnOpen.click();
-
-  // revoke later
   setTimeout(()=> URL.revokeObjectURL(url), 120000);
 }
 
@@ -848,8 +894,6 @@ async function viewEvidence(ev, openInNewTab=false){
  * Export / Import / Reset
  **********************/
 async function exportData(){
-  // Export state + blobs? blobs cannot be easily exported in one json without base64.
-  // We'll export ONLY metadata, with a note.
   const payload = {
     exportedAt: new Date().toISOString(),
     note: 'هذا التصدير يحتوي على البيانات النصية والروابط فقط. الملفات/الصور المخزنة في IndexedDB لا يمكن تضمينها داخل JSON تلقائياً. لإعادة نقل الملفات: أعيدي رفعها في المتصفح الجديد.',
@@ -887,12 +931,8 @@ function importData(file){
 
 async function resetAll(){
   if(!confirm('سيتم حذف كل البيانات المخزنة (بما فيها الملفات). هل أنتِ متأكدة؟')) return;
-
-  // Clear localStorage
   localStorage.removeItem(APP_KEY);
-  // Clear IndexedDB
   indexedDB.deleteDatabase(DB_NAME);
-
   state = structuredClone(SEED);
   saveState();
   render();
