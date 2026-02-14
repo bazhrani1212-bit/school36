@@ -6,12 +6,12 @@
   <title>إدارة شواهد التقويم المدرسي</title>
   <style>
     :root{
-      --bg:#f7fbf7; --card:#ffffff; --text:#0f172a; --muted:#475569;
+      --bg:#f1fbf1; --card:#ffffff; --text:#0f172a; --muted:#475569;
       --primary:#0f7a3a; --border:#dbe7db; --shadow: 0 10px 30px rgba(2,6,23,.08);
       --radius:16px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial; color:var(--text); background:linear-gradient(180deg,#ffffff, var(--bg)); font-size:26px;}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial; color:var(--text); background:linear-gradient(180deg,#ffffff 0%, var(--bg) 60%, #ffffff 100%); font-size:24px;}
     a{color:var(--primary);text-decoration:none}
     a:hover{text-decoration:underline}
     header{
@@ -110,7 +110,19 @@
 
     .tiny{font-size:18px; color:var(--muted)}
     .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:18px; border:1px solid var(--border); padding:2px 6px; border-radius:8px; background:#fff}
-      .masthead{font-weight:900; font-size:26px; line-height:1.5; margin-bottom:6px}
+      .masthead{font-weight:900; font-size:26px; line-height:1.6; margin-bottom:10px}
+    .masthead-box{
+      background: linear-gradient(135deg, #ffffff 0%, #e8f7ea 60%, #ffffff 100%);
+      border:1px solid rgba(15,122,58,.18);
+      border-radius:16px;
+      padding:12px 14px;
+      box-shadow:
+        0 14px 28px rgba(2,6,23,.10),
+        inset 0 1px 0 rgba(255,255,255,.75),
+        inset 0 -6px 14px rgba(15,122,58,.08);
+    }
+    .masthead-line{display:block}
+    .masthead-line + .masthead-line{margin-top:4px}
   </style>
 </head>
 <body>
@@ -118,7 +130,13 @@
   <div class="wrap">
     <div class="brand">
       <div>
-        <div class="masthead">المملكة العربية السعودية - وزارة التعليم - الابتدائية السادسة والثلاثون - فريق التميز - مديرة المدرسة نورة الرفاعي</div>
+        <div class="masthead masthead-box">
+          <span class="masthead-line">المملكة العربية السعودية</span>
+          <span class="masthead-line">وزارة التعليم</span>
+          <span class="masthead-line">الابتدائية السادسة والثلاثون</span>
+          <span class="masthead-line">فريق التميز</span>
+          <span class="masthead-line">مديرة المدرسة: نورة الرفاعي</span>
+        </div>
         <h1>إدارة شواهد التقويم المدرسي</h1>
         <div class="sub">منصة محلية (بدون سيرفر) لإضافة الشواهد لكل مؤشر — روابط / صور / ملفات — مع حفظ تلقائي.</div>
       </div>
