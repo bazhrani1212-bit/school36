@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>إدارة شواهد التقويم المدرسي</title>
+  <style>
+    :root{
+      --bg:#f7fbf7; --card:#ffffff; --text:#0f172a; --muted:#475569;
+      --primary:#0f7a3a; --border:#dbe7db; --shadow: 0 10px 30px rgba(2,6,23,.08);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial; color:var(--text); background:linear-gradient(180deg,#ffffff, var(--bg));}
+    a{color:var(--primary);text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      position:sticky; top:0; z-index:5;
+      background:#fff; border-bottom:1px solid var(--border);
+    }
+    .wrap{max-width:1300px; margin:0 auto; padding:14px 16px;}
+    .brand{display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+    .brand h1{font-size:20px; margin:0;}
+    .brand .sub{font-size:12px; color:var(--muted); line-height:1.5}
+    .actions{display:flex; gap:8px; flex-wrap:wrap}
+    button,.btn{
+      border:1px solid var(--border); background:#fff; color:var(--text);
+      padding:10px 12px; border-radius:12px; cursor:pointer;
+      box-shadow: 0 3px 10px rgba(2,6,23,.06);
+      font-weight:600;
+    }
+    button.primary{background:var(--primary); color:#fff; border-color:transparent}
+    button.danger{background:#b42318;color:#fff;border-color:transparent}
+    button:disabled{opacity:.6; cursor:not-allowed}
+
+    main{max-width:1300px; margin:0 auto; padding:18px 16px 40px;}
+    .grid{display:grid; grid-template-columns: 320px 1fr; gap:14px;}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+
+    .panel{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow)}
+    .panel .hd{padding:14px 14px 10px; border-bottom:1px solid var(--border)}
+    .panel .hd h2{margin:0;font-size:15px}
+    .panel .bd{padding:12px 14px}
+
+    .domain-list{display:flex; flex-direction:column; gap:8px}
+    .domain-item{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 12px; border:1px solid var(--border); border-radius:14px; cursor:pointer;
+      background:#fff;
+    }
+    .domain-item.active{outline:2px solid rgba(15,122,58,.20); border-color:rgba(15,122,58,.35)}
+    .domain-item small{color:var(--muted)}
+
+    .search{display:flex; gap:8px; align-items:center}
+    input[type="text"], textarea, select{
+      width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--border);
+      background:#fff; color:var(--text);
+      outline:none;
+    }
+    textarea{min-height:90px; resize:vertical}
+
+    .toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+    .pill{display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border:1px solid var(--border); border-radius:999px; color:var(--muted); background:#fff}
+
+    .cards{display:flex; flex-direction:column; gap:10px}
+    .card{background:#fff; border:1px solid var(--border); border-radius:var(--radius); box-shadow: 0 10px 25px rgba(2,6,23,.06)}
+    .card .top{padding:12px 14px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; gap:10px; align-items:flex-start; flex-wrap:wrap}
+    .meta{display:flex; flex-direction:column; gap:4px}
+    .code{font-weight:800; letter-spacing:.5px}
+    .std{font-size:12px; color:var(--muted)}
+    .card .content{padding:12px 14px}
+    .indicator{white-space:pre-wrap; line-height:1.7}
+
+    .evidence{margin-top:10px; padding-top:10px; border-top:1px dashed var(--border)}
+    .evidence-hd{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap}
+    .ev-grid{display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:10px; margin-top:10px}
+    @media (max-width: 980px){ .ev-grid{grid-template-columns: repeat(2, minmax(0, 1fr));} }
+    @media (max-width: 560px){ .ev-grid{grid-template-columns: 1fr;} }
+
+    .ev{
+      border:1px solid var(--border); border-radius:14px; overflow:hidden; background:#fff;
+      display:flex; flex-direction:column;
+    }
+    .thumb{height:140px; background:#f2f6f2; display:flex; align-items:center; justify-content:center; color:var(--muted); position:relative}
+    .thumb img{width:100%; height:100%; object-fit:cover}
+    .thumb .tag{position:absolute; bottom:8px; left:8px; background:rgba(15,122,58,.92); color:#fff; font-size:11px; padding:4px 8px; border-radius:999px}
+    .ev .info{padding:10px 10px 12px; display:flex; flex-direction:column; gap:6px}
+    .ev .title{font-weight:800; font-size:13px; line-height:1.4}
+    .ev .sub{font-size:12px; color:var(--muted)}
+    .ev .row{display:flex; gap:8px; flex-wrap:wrap}
+    .ev .row button{padding:8px 10px; border-radius:12px; font-weight:700; box-shadow:none}
+
+    /* Modal */
+    .modal{position:fixed; inset:0; background:rgba(2,6,23,.55); display:none; align-items:center; justify-content:center; z-index:50; padding:18px}
+    .modal.show{display:flex}
+    .dialog{width:min(980px, 100%); background:#fff; border-radius:18px; border:1px solid var(--border); box-shadow:var(--shadow); overflow:hidden}
+    .dialog .dh{padding:12px 14px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:10px}
+    .dialog .dh strong{font-size:14px}
+    .dialog .db{padding:14px}
+    .close{background:#fff}
+    .viewer{width:100%; height:70vh; border:1px solid var(--border); border-radius:14px; overflow:hidden; background:#f7faf7}
+    .viewer iframe,.viewer embed{width:100%; height:100%; border:0}
+
+    .hint{color:var(--muted); font-size:12px; line-height:1.7}
+    .toast{position:fixed; bottom:16px; right:16px; background:#0b1220; color:#fff; padding:10px 12px; border-radius:12px; display:none; z-index:60; max-width:360px}
+    .toast.show{display:block}
+
+    .split{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    @media (max-width: 900px){ .split{grid-template-columns:1fr} }
+
+    .tiny{font-size:11px; color:var(--muted)}
+    .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:11px; border:1px solid var(--border); padding:2px 6px; border-radius:8px; background:#fff}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <div>
+        <h1>إدارة شواهد التقويم المدرسي</h1>
+        <div class="sub">منصة محلية (بدون سيرفر) لإضافة الشواهد لكل مؤشر — روابط / صور / ملفات — مع حفظ تلقائي.</div>
+      </div>
+      <div class="actions">
+        <button class="primary" id="btnAddIndicator">+ إضافة مؤشر</button>
+        <button id="btnExport">تصدير نسخة (JSON)</button>
+        <label class="btn" style="display:inline-flex;align-items:center;gap:8px">
+          استيراد نسخة
+          <input id="importFile" type="file" accept="application/json" style="display:none" />
+        </label>
+        <button class="danger" id="btnReset">إعادة ضبط</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+    <aside class="panel">
+      <div class="hd">
+        <h2>المجالات</h2>
+      </div>
+      <div class="bd">
+        <div class="domain-list" id="domainList"></div>
+        <div style="margin-top:12px" class="hint">
+          <div class="pill">💾 الحفظ تلقائيًا: <span class="kbd">LocalStorage</span> + <span class="kbd">IndexedDB</span></div>
+          <div style="margin-top:8px">لنقل البيانات بين أجهزة/متصفحات مختلفة استخدمي <b>تصدير/استيراد</b>.</div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="panel">
+      <div class="hd">
+        <div class="toolbar">
+          <div style="flex:1" class="search">
+            <input type="text" id="q" placeholder="ابحثي برمز المؤشر أو كلمة من المعيار/المؤشر..." />
+          </div>
+          <div class="pill" id="stat"></div>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="cards" id="cards"></div>
+        <div class="hint" id="empty" style="display:none; padding:12px; border:1px dashed var(--border); border-radius:14px">
+          لا توجد نتائج. جرّبي تعديل البحث أو إضافة مؤشر جديد.
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- Modal: Add/Edit Indicator -->
+<div class="modal" id="mIndicator">
+  <div class="dialog">
+    <div class="dh">
+      <strong id="mIndicatorTitle">إضافة مؤشر</strong>
+      <button class="close" id="closeIndicator">✕</button>
+    </div>
+    <div class="db">
+      <div class="split">
+        <div>
+          <label class="tiny">المجال</label>
+          <select id="fDomain"></select>
+        </div>
+        <div>
+          <label class="tiny">المعيار (اسم المعيار)</label>
+          <input type="text" id="fStandard" placeholder="مثال: التخطيط" />
+        </div>
+      </div>
+      <div class="split" style="margin-top:10px">
+        <div>
+          <label class="tiny">رمز المؤشر</label>
+          <input type="text" id="fCode" placeholder="مثال: 1-1-1-1" />
+        </div>
+        <div>
+          <label class="tiny">عنوان المؤشر (مختصر)</label>
+          <input type="text" id="fIndicatorTitle" placeholder="مثال: تضع المدرسة خطة تشغيلية..." />
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <label class="tiny">وصف المؤشر (اختياري)</label>
+        <textarea id="fIndicatorDesc" placeholder="يمكنكِ لصق وصف المؤشر هنا..."></textarea>
+      </div>
+      <div style="margin-top:10px">
+        <label class="tiny">وثائق مقترحة (اختياري)</label>
+        <textarea id="fSuggested" placeholder="مثال: سجل الخطة التشغيلية ..."></textarea>
+      </div>
+      <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-start">
+        <button class="primary" id="saveIndicator">حفظ</button>
+        <button id="cancelIndicator">إلغاء</button>
+      </div>
+      <div class="hint" style="margin-top:10px">
+        ملاحظة: إذا كانت بعض نصوص المؤشرات غير منسقة عند الاستيراد (من PDF)، يمكنكِ تعديلها هنا.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Add Evidence -->
+<div class="modal" id="mEvidence">
+  <div class="dialog">
+    <div class="dh">
+      <strong id="mEvidenceTitle">إضافة شاهد</strong>
+      <button class="close" id="closeEvidence">✕</button>
+    </div>
+    <div class="db">
+      <div class="split">
+        <div>
+          <label class="tiny">نوع الشاهد</label>
+          <select id="evType">
+            <option value="link">رابط</option>
+            <option value="file">ملف/صورة من الجهاز</option>
+          </select>
+        </div>
+        <div>
+          <label class="tiny">عنوان الشاهد</label>
+          <input type="text" id="evTitle" placeholder="مثال: صورة تنفيذ نشاط" />
+        </div>
+      </div>
+
+      <div id="evLinkBox" style="margin-top:10px">
+        <label class="tiny">الرابط</label>
+        <input type="text" id="evUrl" placeholder="https://..." />
+        <div class="hint">سيُفتح الرابط في تبويب جديد.</div>
+      </div>
+
+      <div id="evFileBox" style="margin-top:10px; display:none">
+        <label class="tiny">اختيار ملف/صورة</label>
+        <input type="file" id="evFile" />
+        <div class="hint">يتم حفظ الملف داخل المتصفح (IndexedDB) ثم تستطيعين استعراضه لاحقًا.</div>
+      </div>
+
+      <div style="margin-top:10px">
+        <label class="tiny">ملاحظات (اختياري)</label>
+        <textarea id="evNotes" placeholder="ملاحظات مختصرة..."></textarea>
+      </div>
+
+      <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-start">
+        <button class="primary" id="saveEvidence">إضافة</button>
+        <button id="cancelEvidence">إلغاء</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Viewer -->
+<div class="modal" id="mViewer">
+  <div class="dialog">
+    <div class="dh">
+      <strong id="viewerTitle">استعراض</strong>
+      <div style="display:flex; gap:8px; flex-wrap:wrap">
+        <button id="viewerOpen">فتح في تبويب جديد</button>
+        <button class="close" id="closeViewer">✕</button>
+      </div>
+    </div>
+    <div class="db">
+      <div class="viewer" id="viewer"></div>
+      <div class="hint" id="viewerHint" style="margin-top:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/**********************
+ * Storage + DB Layer
+ **********************/
+const APP_KEY = 'schoolEvidenceApp:v1';
+const DB_NAME = 'schoolEvidenceBlobs:v1';
+const DB_STORE = 'blobs';
+
+function uuid(){
+  return (crypto?.randomUUID?.() || ('id-' + Math.random().toString(16).slice(2) + Date.now()));
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(APP_KEY);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch{ return null; }
+}
+
+function saveState(){
+  localStorage.setItem(APP_KEY, JSON.stringify(state));
+}
+
+function openDB(){
+  return new Promise((resolve, reject)=>{
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if(!db.objectStoreNames.contains(DB_STORE)){
+        db.createObjectStore(DB_STORE, { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+async function putBlob(record){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(DB_STORE,'readwrite');
+    tx.objectStore(DB_STORE).put(record);
+    tx.oncomplete = ()=> resolve(true);
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function getBlob(id){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(DB_STORE,'readonly');
+    const req = tx.objectStore(DB_STORE).get(id);
+    req.onsuccess = ()=> resolve(req.result || null);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+async function deleteBlob(id){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(DB_STORE,'readwrite');
+    tx.objectStore(DB_STORE).delete(id);
+    tx.oncomplete = ()=> resolve(true);
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+/**********************
+ * Seed (يمكن تعديلها)
+ **********************/
+const DOMAIN_ORDER = [
+  { key:'admin', name:'الإدارة المدرسية' },
+  { key:'teach', name:'مجال التعليم والتعلم' },
+  { key:'outcomes', name:'مجال نواتج التعلم' },
+  { key:'env', name:'مجال البيئة المدرسية' },
+];
+
+// مؤشرات مبدئية (مختصرة) — يمكنك تعديل/إضافة مؤشرات من زر (إضافة مؤشر)
+// إذا أردتِ إدخال كل المؤشرات دفعة واحدة: استخدمي التصدير/الاستيراد بعد تجهيز JSON.
+const SEED = {
+  version: 1,
+  activeDomain: 'admin',
+  domains: {
+    admin: { name: 'الإدارة المدرسية', indicators: [
+      { id: uuid(), standard: 'التخطيط', code: '1-1-1-1', title: 'تضع المدرسة خطة تشغيلية مكتملة العناصر وفق أهداف تطويرية محددة.', desc: '', suggested: '' },
+      { id: uuid(), standard: 'التخطيط', code: '1-1-1-2', title: 'تتابع المدرسة تنفيذ خطتها وتطويرها بما يضمن تحقيق أهدافها.', desc: '', suggested: '' },
+      { id: uuid(), standard: 'قيادة العملية التعليمية', code: '1-2-1-4', title: 'تنشر المدرسة قواعد السلوك والمواظبة، وتتابع تطبيقها.', desc: '', suggested: '' },
+    ]},
+    teach: { name: 'مجال التعليم والتعلم', indicators: [
+      { id: uuid(), standard: 'بناء خبرات التعلم', code: '2-1-1-3', title: 'تنوع المدرسة في استراتيجيات التدريس لتلبية احتياجات الأطفال.', desc: '', suggested: '' },
+      { id: uuid(), standard: 'تقويم التعلم', code: '2-2-1-1', title: 'تطبق المدرسة أساليب تقويم متنوعة وفاعلة لتقويم أداء المتعلمين.', desc: '', suggested: '' },
+    ]},
+    outcomes: { name: 'مجال نواتج التعلم', indicators: [
+      { id: uuid(), standard: 'نمو خبرات التعلم', code: '3-1-1-1', title: 'تحقق المدرسة تقدماً في أداء الأطفال في الجوانب النمائية.', desc: '', suggested: '' },
+    ]},
+    env: { name: 'مجال البيئة المدرسية', indicators: [
+      { id: uuid(), standard: 'توفير بيئة تعلم آمنة وداعمة', code: '4-1-1-1', title: 'توفر المدرسة بيئة صفية وغرف مصادر مناسبة وآمنة.', desc: '', suggested: '' },
+    ]},
+  },
+  // evidence map: indicatorId -> list
+  evidence: {}
+};
+
+let state = loadState() || structuredClone(SEED);
+
+/**********************
+ * UI Rendering
+ **********************/
+const $ = (sel)=>document.querySelector(sel);
+const domainList = $('#domainList');
+const cards = $('#cards');
+const q = $('#q');
+const stat = $('#stat');
+const empty = $('#empty');
+
+function countEvidence(indicatorId){
+  return (state.evidence[indicatorId] || []).length;
+}
+
+function renderDomains(){
+  domainList.innerHTML = '';
+  DOMAIN_ORDER.forEach(d=>{
+    const domain = state.domains[d.key];
+    const el = document.createElement('div');
+    el.className = 'domain-item' + (state.activeDomain===d.key?' active':'');
+    const count = domain?.indicators?.length || 0;
+    el.innerHTML = `
+      <div>
+        <div style="font-weight:900">${domain?.name || d.name}</div>
+        <small>${count} مؤشر</small>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center">
+        <span class="pill" title="عدد الشواهد داخل هذا المجال">📎 ${countDomainEvidence(d.key)}</span>
+      </div>
+    `;
+    el.onclick = ()=>{ state.activeDomain = d.key; saveState(); render(); };
+    domainList.appendChild(el);
+  });
+}
+
+function countDomainEvidence(domainKey){
+  const domain = state.domains[domainKey];
+  if(!domain) return 0;
+  return (domain.indicators||[]).reduce((acc,it)=>acc + countEvidence(it.id), 0);
+}
+
+function normalizeText(s){
+  return (s||'').toLowerCase().replace(/\s+/g,' ').trim();
+}
+
+function renderCards(){
+  const domain = state.domains[state.activeDomain];
+  const query = normalizeText(q.value);
+
+  const list = (domain?.indicators || []).filter(it=>{
+    if(!query) return true;
+    const blob = normalizeText([it.code,it.standard,it.title,it.desc,it.suggested].join(' '));
+    return blob.includes(query);
+  });
+
+  stat.textContent = `${domain?.name || ''} — ${list.length} / ${(domain?.indicators||[]).length} مؤشر`;
+
+  cards.innerHTML = '';
+  empty.style.display = list.length ? 'none' : 'block';
+
+  list
+    .sort((a,b)=> (a.code||'').localeCompare(b.code||'','ar'))
+    .forEach(it=>{
+      const evCount = countEvidence(it.id);
+      const c = document.createElement('div');
+      c.className = 'card';
+      c.innerHTML = `
+        <div class="top">
+          <div class="meta">
+            <div class="code">${escapeHtml(it.code||'')}</div>
+            <div class="std">المعيار: ${escapeHtml(it.standard||'—')}</div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap">
+            <button data-act="addEv">+ إضافة شاهد</button>
+            <button data-act="edit">تعديل</button>
+            <button class="danger" data-act="del">حذف</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="indicator"><b>${escapeHtml(it.title||'')}</b>${it.desc?`\n\n${escapeHtml(it.desc)}`:''}</div>
+          ${it.suggested?`<div class="hint" style="margin-top:10px"><b>وثائق مقترحة:</b> ${escapeHtml(it.suggested)}</div>`:''}
+
+          <div class="evidence">
+            <div class="evidence-hd">
+              <div class="pill">📎 الشواهد: <b>${evCount}</b></div>
+              <div class="hint">إرفاق رابط / صورة / ملف — مع الاستعراض داخل المنصة</div>
+            </div>
+            <div class="ev-grid" id="ev-${it.id}"></div>
+          </div>
+        </div>
+      `;
+
+      // actions
+      c.querySelector('[data-act="addEv"]').onclick = ()=> openEvidenceModal(it.id);
+      c.querySelector('[data-act="edit"]').onclick = ()=> openIndicatorModal(it);
+      c.querySelector('[data-act="del"]').onclick = ()=> deleteIndicator(it.id);
+
+      cards.appendChild(c);
+      renderEvidenceGrid(it.id);
+    });
+}
+
+function escapeHtml(s){
+  return String(s||'').replace(/[&<>"]/g, (c)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+}
+
+async function renderEvidenceGrid(indicatorId){
+  const grid = document.getElementById(`ev-${indicatorId}`);
+  if(!grid) return;
+  const list = state.evidence[indicatorId] || [];
+  grid.innerHTML = '';
+
+  if(list.length===0){
+    const msg = document.createElement('div');
+    msg.className = 'hint';
+    msg.style.gridColumn = '1 / -1';
+    msg.textContent = 'لا توجد شواهد بعد. اضغطي "+ إضافة شاهد".';
+    grid.appendChild(msg);
+    return;
+  }
+
+  for(const ev of list){
+    const el = document.createElement('div');
+    el.className = 'ev';
+
+    let thumb = `<div class="thumb"><div>📎</div><span class="tag">${ev.type==='link'?'رابط':'ملف'}</span></div>`;
+
+    if(ev.type==='file' && ev.mime && ev.mime.startsWith('image/')){
+      // Use Blob URL (async)
+      const rec = await getBlob(ev.blobId);
+      if(rec?.blob){
+        const url = URL.createObjectURL(rec.blob);
+        thumb = `<div class="thumb"><img alt="" src="${url}"><span class="tag">صورة</span></div>`;
+        // revoke later to keep UI responsive
+        setTimeout(()=> URL.revokeObjectURL(url), 10000);
+      }
+    }
+
+    el.innerHTML = `
+      ${thumb}
+      <div class="info">
+        <div class="title">${escapeHtml(ev.title || (ev.type==='link'? 'رابط' : (ev.name || 'ملف')))}</div>
+        <div class="sub">${escapeHtml(ev.type==='link'? ev.url : (ev.name || ev.mime || ''))}</div>
+        ${ev.notes?`<div class="sub">📝 ${escapeHtml(ev.notes)}</div>`:''}
+        <div class="row">
+          <button data-act="view">استعراض</button>
+          <button data-act="open">فتح</button>
+          <button class="danger" data-act="remove">حذف</button>
+        </div>
+      </div>
+    `;
+
+    el.querySelector('[data-act="view"]').onclick = ()=> viewEvidence(ev);
+    el.querySelector('[data-act="open"]').onclick = ()=> openEvidence(ev);
+    el.querySelector('[data-act="remove"]').onclick = ()=> removeEvidence(indicatorId, ev.id);
+
+    grid.appendChild(el);
+  }
+}
+
+function render(){
+  renderDomains();
+  renderCards();
+}
+
+/**********************
+ * Indicator CRUD
+ **********************/
+let editingIndicatorId = null;
+
+function openIndicatorModal(indicator=null){
+  editingIndicatorId = indicator?.id || null;
+
+  $('#mIndicatorTitle').textContent = indicator ? 'تعديل مؤشر' : 'إضافة مؤشر';
+
+  // domains select
+  const sel = $('#fDomain');
+  sel.innerHTML = '';
+  DOMAIN_ORDER.forEach(d=>{
+    const opt = document.createElement('option');
+    opt.value = d.key;
+    opt.textContent = state.domains[d.key]?.name || d.name;
+    sel.appendChild(opt);
+  });
+  sel.value = indicator ? findIndicatorDomain(indicator.id) : state.activeDomain;
+
+  $('#fStandard').value = indicator?.standard || '';
+  $('#fCode').value = indicator?.code || '';
+  $('#fIndicatorTitle').value = indicator?.title || '';
+  $('#fIndicatorDesc').value = indicator?.desc || '';
+  $('#fSuggested').value = indicator?.suggested || '';
+
+  showModal('mIndicator');
+}
+
+function findIndicatorDomain(indicatorId){
+  for(const d of DOMAIN_ORDER){
+    const domain = state.domains[d.key];
+    if((domain?.indicators||[]).some(x=>x.id===indicatorId)) return d.key;
+  }
+  return state.activeDomain;
+}
+
+function upsertIndicator(){
+  const domainKey = $('#fDomain').value;
+  const code = $('#fCode').value.trim();
+  const standard = $('#fStandard').value.trim();
+  const title = $('#fIndicatorTitle').value.trim();
+  const desc = $('#fIndicatorDesc').value.trim();
+  const suggested = $('#fSuggested').value.trim();
+
+  if(!code || !title){
+    toast('فضلاً: أدخلي رمز المؤشر + عنوان المؤشر');
+    return;
+  }
+
+  // If editing: remove from old domain first
+  if(editingIndicatorId){
+    const oldDomain = findIndicatorDomain(editingIndicatorId);
+    const oldList = state.domains[oldDomain].indicators;
+    const idx = oldList.findIndex(x=>x.id===editingIndicatorId);
+    const obj = {
+      id: editingIndicatorId,
+      standard, code, title, desc, suggested,
+    };
+    if(idx>-1) oldList.splice(idx, 1);
+    state.domains[domainKey].indicators.push(obj);
+  } else {
+    const obj = { id: uuid(), standard, code, title, desc, suggested };
+    state.domains[domainKey].indicators.push(obj);
+  }
+
+  saveState();
+  hideModal('mIndicator');
+  render();
+  toast('تم الحفظ ✅');
+}
+
+async function deleteIndicator(indicatorId){
+  if(!confirm('حذف المؤشر مع جميع الشواهد؟')) return;
+
+  // delete evidence blobs
+  const evs = state.evidence[indicatorId] || [];
+  for(const ev of evs){
+    if(ev.type==='file' && ev.blobId){
+      try{ await deleteBlob(ev.blobId); }catch{}
+    }
+  }
+  delete state.evidence[indicatorId];
+
+  // remove indicator
+  const dKey = findIndicatorDomain(indicatorId);
+  const list = state.domains[dKey].indicators;
+  const idx = list.findIndex(x=>x.id===indicatorId);
+  if(idx>-1) list.splice(idx,1);
+
+  saveState();
+  render();
+  toast('تم الحذف');
+}
+
+/**********************
+ * Evidence CRUD
+ **********************/
+let currentIndicatorForEvidence = null;
+
+function openEvidenceModal(indicatorId){
+  currentIndicatorForEvidence = indicatorId;
+  $('#mEvidenceTitle').textContent = 'إضافة شاهد للمؤشر';
+  $('#evType').value = 'link';
+  $('#evTitle').value = '';
+  $('#evUrl').value = '';
+  $('#evNotes').value = '';
+  $('#evFile').value = '';
+  toggleEvType();
+  showModal('mEvidence');
+}
+
+function toggleEvType(){
+  const type = $('#evType').value;
+  $('#evLinkBox').style.display = type==='link' ? 'block' : 'none';
+  $('#evFileBox').style.display = type==='file' ? 'block' : 'none';
+}
+
+async function addEvidence(){
+  const type = $('#evType').value;
+  const title = $('#evTitle').value.trim();
+  const notes = $('#evNotes').value.trim();
+
+  if(!currentIndicatorForEvidence){
+    toast('حدث خطأ: لم يتم تحديد المؤشر');
+    return;
+  }
+
+  const list = state.evidence[currentIndicatorForEvidence] ||= [];
+
+  if(type==='link'){
+    const url = $('#evUrl').value.trim();
+    if(!url || !/^https?:\/\//i.test(url)){
+      toast('فضلاً: أدخلي رابط يبدأ بـ http/https');
+      return;
+    }
+    list.push({ id: uuid(), type:'link', title, url, notes, createdAt: new Date().toISOString() });
+    saveState();
+    hideModal('mEvidence');
+    render();
+    toast('تمت الإضافة ✅');
+    return;
+  }
+
+  // file
+  const fileInput = $('#evFile');
+  const file = fileInput.files?.[0];
+  if(!file){
+    toast('فضلاً: اختاري ملفاً');
+    return;
+  }
+
+  const blobId = uuid();
+  await putBlob({ id: blobId, blob: file, name: file.name, mime: file.type || 'application/octet-stream', size: file.size, createdAt: new Date().toISOString() });
+
+  list.push({
+    id: uuid(), type:'file', title,
+    blobId,
+    name: file.name,
+    mime: file.type || 'application/octet-stream',
+    size: file.size,
+    notes,
+    createdAt: new Date().toISOString(),
+  });
+
+  saveState();
+  hideModal('mEvidence');
+  render();
+  toast('تم حفظ الملف داخل المتصفح ✅');
+}
+
+async function removeEvidence(indicatorId, evidenceId){
+  if(!confirm('حذف الشاهد؟')) return;
+  const list = state.evidence[indicatorId] || [];
+  const idx = list.findIndex(x=>x.id===evidenceId);
+  if(idx===-1) return;
+  const ev = list[idx];
+  list.splice(idx,1);
+  if(ev.type==='file' && ev.blobId){
+    try{ await deleteBlob(ev.blobId); }catch{}
+  }
+  saveState();
+  render();
+  toast('تم الحذف');
+}
+
+/**********************
+ * Viewer / Open
+ **********************/
+let currentViewing = null;
+
+function showModal(id){ document.getElementById(id).classList.add('show'); }
+function hideModal(id){ document.getElementById(id).classList.remove('show'); }
+
+function openEvidence(ev){
+  if(ev.type==='link'){
+    window.open(ev.url, '_blank', 'noopener,noreferrer');
+    return;
+  }
+  // file
+  viewEvidence(ev, true);
+}
+
+async function viewEvidence(ev, openInNewTab=false){
+  currentViewing = ev;
+  const viewer = $('#viewer');
+  const hint = $('#viewerHint');
+  const btnOpen = $('#viewerOpen');
+  viewer.innerHTML = '';
+  hint.textContent = '';
+
+  if(ev.type==='link'){
+    $('#viewerTitle').textContent = ev.title || 'رابط';
+    const frame = document.createElement('iframe');
+    frame.referrerPolicy = 'no-referrer';
+    frame.src = ev.url;
+    viewer.appendChild(frame);
+    btnOpen.onclick = ()=> window.open(ev.url, '_blank', 'noopener,noreferrer');
+    showModal('mViewer');
+    if(openInNewTab) btnOpen.click();
+    return;
+  }
+
+  const rec = await getBlob(ev.blobId);
+  if(!rec?.blob){
+    toast('لم يتم العثور على الملف داخل المتصفح');
+    return;
+  }
+
+  const url = URL.createObjectURL(rec.blob);
+  $('#viewerTitle').textContent = ev.title || ev.name || 'ملف';
+
+  btnOpen.onclick = ()=> window.open(url, '_blank', 'noopener');
+
+  // Try to embed preview
+  const mime = ev.mime || rec.mime || '';
+  if(mime.startsWith('image/')){
+    const img = document.createElement('img');
+    img.src = url;
+    img.style.width='100%';
+    img.style.height='100%';
+    img.style.objectFit='contain';
+    viewer.appendChild(img);
+  } else if(mime === 'application/pdf'){
+    const embed = document.createElement('embed');
+    embed.src = url;
+    embed.type = 'application/pdf';
+    viewer.appendChild(embed);
+  } else {
+    // fallback
+    const box = document.createElement('div');
+    box.style.padding='14px';
+    box.className='hint';
+    box.innerHTML = `لا يمكن استعراض هذا النوع داخل الصفحة دائماً. استخدمي زر <b>فتح في تبويب جديد</b> أو تحميل الملف.`;
+    viewer.appendChild(box);
+    hint.textContent = `النوع: ${mime || 'غير معروف'} — الاسم: ${ev.name || ''}`;
+  }
+
+  showModal('mViewer');
+  if(openInNewTab) btnOpen.click();
+
+  // revoke later
+  setTimeout(()=> URL.revokeObjectURL(url), 120000);
+}
+
+/**********************
+ * Export / Import / Reset
+ **********************/
+async function exportData(){
+  // Export state + blobs? blobs cannot be easily exported in one json without base64.
+  // We'll export ONLY metadata, with a note.
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    note: 'هذا التصدير يحتوي على البيانات النصية والروابط فقط. الملفات/الصور المخزنة في IndexedDB لا يمكن تضمينها داخل JSON تلقائياً. لإعادة نقل الملفات: أعيدي رفعها في المتصفح الجديد.',
+    state
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'school-evidence-export.json';
+  a.click();
+  setTimeout(()=> URL.revokeObjectURL(url), 2000);
+  toast('تم التصدير ✅');
+}
+
+function importData(file){
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const parsed = JSON.parse(String(reader.result||''));
+      if(parsed?.state?.domains && parsed?.state?.evidence){
+        state = parsed.state;
+        saveState();
+        render();
+        toast('تم الاستيراد ✅');
+      } else {
+        toast('ملف غير صالح');
+      }
+    }catch{
+      toast('تعذر قراءة الملف');
+    }
+  };
+  reader.readAsText(file);
+}
+
+async function resetAll(){
+  if(!confirm('سيتم حذف كل البيانات المخزنة (بما فيها الملفات). هل أنتِ متأكدة؟')) return;
+
+  // Clear localStorage
+  localStorage.removeItem(APP_KEY);
+  // Clear IndexedDB
+  indexedDB.deleteDatabase(DB_NAME);
+
+  state = structuredClone(SEED);
+  saveState();
+  render();
+  toast('تمت إعادة الضبط');
+}
+
+/**********************
+ * Wire up events
+ **********************/
+q.addEventListener('input', ()=> renderCards());
+
+$('#btnAddIndicator').addEventListener('click', ()=> openIndicatorModal(null));
+$('#saveIndicator').addEventListener('click', upsertIndicator);
+$('#cancelIndicator').addEventListener('click', ()=> hideModal('mIndicator'));
+$('#closeIndicator').addEventListener('click', ()=> hideModal('mIndicator'));
+
+$('#evType').addEventListener('change', toggleEvType);
+$('#saveEvidence').addEventListener('click', addEvidence);
+$('#cancelEvidence').addEventListener('click', ()=> hideModal('mEvidence'));
+$('#closeEvidence').addEventListener('click', ()=> hideModal('mEvidence'));
+
+$('#closeViewer').addEventListener('click', ()=> hideModal('mViewer'));
+
+$('#btnExport').addEventListener('click', exportData);
+$('#importFile').addEventListener('change', (e)=>{
+  const f = e.target.files?.[0];
+  if(f) importData(f);
+  e.target.value = '';
+});
+
+$('#btnReset').addEventListener('click', resetAll);
+
+// Close modals on backdrop click
+['mIndicator','mEvidence','mViewer'].forEach(id=>{
+  const m = document.getElementById(id);
+  m.addEventListener('click', (e)=>{ if(e.target===m) hideModal(id); });
+});
+
+render();
+</script>
+</body>
+</html>
